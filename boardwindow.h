@@ -27,6 +27,7 @@ private:
     const int boardsize;
 
     int tileshstart,tilesvstart,tilesize,tilespacing;
+    int winwidth,winhight;
 
 
 
