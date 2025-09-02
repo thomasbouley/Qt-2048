@@ -26,11 +26,6 @@ void loseWindow::close_pressed(){
 }
 
 
-
-
-
-
-
 winWindow::winWindow(QWidget *parent)
     : QMainWindow{parent}{
 

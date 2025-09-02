@@ -67,8 +67,9 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
 
     updatetiles();
 
-    updatescore();
+    haswon=b.haswon();
 
+    updatescore();
 }
 
 boardwindow::~boardwindow(){}//All QWidget * members have this as parent
