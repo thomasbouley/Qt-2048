@@ -4,7 +4,7 @@
 
 board::board(unsigned int size):
     bsize{size},
-    boardstate(size,std::vector<int>(size,0)),
+    boardstate(size,std::vector<unsigned int>(size,0)),
     animationinfo(size,std::vector<int>(size,0)){
     score=0;
     haswonb=false;
@@ -12,6 +12,49 @@ board::board(unsigned int size):
     gen.seed((long) this);
     addrandom();
     addrandom();
+
+    lastmove=direction::Up;//Ensure that getlastmove returns valid direction
+}
+
+board::board(unsigned int size, unsigned long nscore,std::vector<std::vector<unsigned int>> bs):
+    bsize{size},
+    boardstate(bs),
+    animationinfo(size,std::vector<int>(size,0)){
+    score=nscore;
+    if(bsize!=bs.size())
+        throw(std::runtime_error("Inconsistent Board"));
+    for(int i=0;i<bsize;i++){
+        if(bsize!=bs[i].size())
+            throw (std::runtime_error("Inconsistent Board"));
+    }
+
+    unsigned long maxscore=0;
+    unsigned long minscore=0;
+
+    haswonb=false;
+    numempty=0;
+
+    unsigned int val;
+    for(int i=0;i<bsize;i++){
+        for(int j=0;j<bsize;j++){
+            val=boardstate[i][j];
+            if(val==0)
+                numempty++;
+            else if(val>1){
+                maxscore+= (1L << val)*(val-1);
+                minscore+= (1L << val)*(val-2);
+            }
+            if(val>=11)
+                haswonb=true;
+
+        }
+    }
+
+    if(score>maxscore || score<minscore)
+        throw (std::runtime_error("Inconsistent Board"));//Ensure that the score is from a possible game
+
+    lastmove=direction::Up;//Ensure that getlastmove returns valid direction
+
 }
 
 board::~board(){}
@@ -106,6 +149,7 @@ bool board::haswon(){
 
 
 void board::addrandom(){
+    if(numempty==0) return;
     std::uniform_int_distribution<int> dis1(1,numempty);
     int wempty=dis1(gen);
 
@@ -137,7 +181,7 @@ unsigned long board::getscore(){
     return score;
 }
 
-std::vector<std::vector<int>> board::getboardstate(){
+std::vector<std::vector<unsigned int>> board::getboardstate(){
     return boardstate;
 }
 

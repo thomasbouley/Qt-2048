@@ -1,4 +1,5 @@
 #include "startwindow.h"
+#include <QSettings>
 
 StartWindow::StartWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,6 +33,15 @@ StartWindow::StartWindow(QWidget *parent)
     cancel->setGeometry(QRect(QPoint(120, 45), QSize(60, 25)));
     connect(cancel, &QPushButton::pressed, this, &StartWindow::cancel_pressed);
 
+    bw=nullptr;
+
+    QSettings set;
+    if(set.value("RestartGame").toBool()){
+        bw=new boardwindow(set.value("SavedGame").toString(),this);
+        connect(bw,&boardwindow::game_end,this,&StartWindow::new_game);
+        bw->show();
+    }
+
 }
 
 StartWindow::~StartWindow() {}
@@ -42,7 +52,7 @@ void StartWindow::start_pressed(){
         bw=new boardwindow(number->text().toInt(),this);
         connect(bw,&boardwindow::game_end,this,&StartWindow::new_game);
         start->setDown(false);
-        close();
+        hide();
         bw->show();
     }
 }
@@ -53,5 +63,24 @@ void StartWindow::cancel_pressed(){
 
 void StartWindow::new_game(){
     delete bw;
+    bw=nullptr;
     show();
+}
+
+void StartWindow::save_state(){
+    QString str;
+    QSettings settings;
+    if(bw!=nullptr){
+        str=bw->getgamestring();
+        if(str.isEmpty()){
+            settings.setValue("RestartGame",false);
+        }
+        else{
+            settings.setValue("RestartGame",true);
+            settings.setValue("SavedGame",str);
+        }
+    }
+    else{
+        settings.setValue("RestartGame",false);
+    }
 }

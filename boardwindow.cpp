@@ -1,6 +1,7 @@
 #include "boardwindow.h"
 #include <QSettings>
 
+
 boardwindow::boardwindow(int size,QWidget *parent)
     : QMainWindow{parent},
     boardsize{size},
@@ -12,36 +13,11 @@ boardwindow::boardwindow(int size,QWidget *parent)
     str.setNum(boardsize);
     highscore=settings.value(str+"/HighScore").toInt();
 
-    tileshstart=20,tilesvstart=75;
-    tilesize=80;
-    tilespacing=tilesize+10;
+    setsizes();
 
-    int hight=2*tilesvstart+boardsize* tilespacing;
-    int width=2*tileshstart+boardsize* tilespacing;
+    resize(QSize(winwidth,winhight));
 
-    resize(QSize(width,hight));
-
-    scorelabel=new QLabel(tr("Score\n 0"),this);
-    scorelabel->setGeometry(10,15,100,40);
-    scorelabel->setAlignment(Qt::AlignCenter);
-
-    newgamebutton=new QPushButton(tr("New Game"),this);
-    newgamebutton->setGeometry(width/2-50,15,100,40);
-    connect(newgamebutton,&QPushButton::pressed,this,&boardwindow::game_end);
-
-    str.setNum(highscore);
-    highscorelabel=new QLabel(tr("High Score\n")+str,this);
-    highscorelabel->setGeometry(width-100-10,15,100,40);
-    highscorelabel->setAlignment(Qt::AlignCenter);
-
-    boardlabel=new QLabel(this);
-    boardlabel->setGeometry(tileshstart-10,tilesvstart-10,tilespacing*boardsize+10,tilespacing*boardsize+10);
-    boardlabel->setFrameShape(QFrame::Panel);
-    boardlabel->setStyleSheet("border-style: solid;"
-                              "border-width: 5px;"
-                              "border-radius: 20px;"
-                              "border-color: grey");
-
+    initializelables();
 
     initializetiles();
 
@@ -49,10 +25,56 @@ boardwindow::boardwindow(int size,QWidget *parent)
 
 }
 
+boardwindow::boardwindow(QString gamestring,QWidget *parent)
+    : QMainWindow{parent},
+    b{0}{
+    QStringList toplist=gamestring.split("|");
+    if(toplist.size()!=3)
+        throw(std::runtime_error("Corrupt Saved Game"));
+
+    boardsize=toplist[0].toInt();
+    int score=toplist[1].toInt();
+
+    QStringList list=toplist[2].split("\n");
+    std::vector<std::vector<unsigned int>> newboard;
+    QStringList listrow;
+    std::vector<unsigned int> row;
+
+    for(QStringList::iterator outer=list.begin();outer!=list.end();outer++){
+        listrow=outer->split(",");
+        for(QStringList::iterator inner=listrow.begin();inner!=listrow.end();inner++){
+            row.push_back(inner->toInt());
+        }
+        newboard.push_back(row);
+        row.clear();
+    }
+    b=board(boardsize,score,newboard);
+
+    tiles=std::vector<std::vector<QLabel *>>((unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr));
+
+    QSettings settings;
+    QString str;
+    str.setNum(boardsize);
+    highscore=settings.value(str+"/HighScore").toInt();
+
+    setsizes();
+
+    resize(QSize(winwidth,winhight));
+
+    initializelables();
+
+    initializetiles();
+
+    updatetiles();
+
+    updatescore();
+
+}
+
 boardwindow::~boardwindow(){}//All QWidget * members have this as parent
 
 void boardwindow::updatetiles(){
-    std::vector<std::vector<int>> bs=b.getboardstate();
+    std::vector<std::vector<unsigned int>> bs=b.getboardstate();
     int val=0;
     QString str;
     for(int i=0;i<boardsize;i++){
@@ -73,6 +95,21 @@ void boardwindow::updatetiles(){
             }
         }
     }
+}
+
+void boardwindow::setsizes(){
+    tileshstart=20,tilesvstart=75;
+    tilesize=80;
+    tilespacing=tilesize+10;
+
+    winhight=tilesvstart+boardsize* tilespacing+10;
+    winwidth=2*tileshstart+boardsize* tilespacing - 10;
+
+    if(winwidth<340){
+        winwidth=340;
+        tileshstart=(winwidth-boardsize* tilespacing)/2;
+    }
+
 }
 
 void boardwindow::keyPressEvent(QKeyEvent *event){
@@ -141,6 +178,58 @@ void boardwindow::initializetiles(){
     }
 }
 
+void boardwindow::initializelables(){
+    scorelabel=new QLabel(tr("Score\n 0"),this);
+    scorelabel->setGeometry(10,15,100,40);
+    scorelabel->setAlignment(Qt::AlignCenter);
+
+    newgamebutton=new QPushButton(tr("New Game"),this);
+    newgamebutton->setGeometry(winwidth/2-50,15,100,40);
+    connect(newgamebutton,&QPushButton::pressed,this,&boardwindow::game_end);
+
+    QString str;
+    str.setNum(highscore);
+    highscorelabel=new QLabel(tr("High Score\n")+str,this);
+    highscorelabel->setGeometry(winwidth-100-10,15,100,40);
+    highscorelabel->setAlignment(Qt::AlignCenter);
+
+    boardlabel=new QLabel(this);
+    boardlabel->setGeometry(tileshstart-10,tilesvstart-10,tilespacing*boardsize+10,tilespacing*boardsize+10);
+    boardlabel->setFrameShape(QFrame::Panel);
+    boardlabel->setStyleSheet("border-style: solid;"
+                              "border-width: 5px;"
+                              "border-radius: 20px;"
+                              "border-color: grey");
+}
+
+std::string int_arr_2d_to_string(std::vector<std::vector<unsigned int>> arr_2d){
+    std::string str;
+    for(std::vector<std::vector<unsigned int>>::iterator outer=arr_2d.begin();
+         outer!=arr_2d.end();outer++){
+        for(std::vector<unsigned int>::iterator inner=outer->begin();inner != outer->end();inner++ ){
+            str+=std::to_string(*inner)+",";
+        }
+        str.pop_back();
+        str.push_back('\n');
+    }
+    str.pop_back();
+    return  str;
+}
+
+QString boardwindow::getgamestring(){
+    QString gamestate,temp;
+
+    if(b.haslost())
+        return gamestate;
+
+    temp.setNum(b.getsize());
+    gamestate+=temp+"|";
+    temp.setNum(b.getscore());
+    gamestate+=temp+"|";
+    gamestate+=int_arr_2d_to_string(b.getboardstate());
+
+    return gamestate;
+}
 
 const char boardwindow::styletable[13][70]={"color: rgb(118,  110, 102); background-color: rgb(236, 228, 219)",
                                  "color: rgb(118, 110, 102); background-color: rgb(235, 224, 203)",

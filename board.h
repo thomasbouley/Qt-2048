@@ -9,6 +9,7 @@ class board
 {
 public:
     board(unsigned int size);
+    board(unsigned int size,unsigned long score,std::vector<std::vector<unsigned int>> newb);
     ~board();
 
     enum class direction;
@@ -19,7 +20,7 @@ public:
     bool haswon();
     bool haslost();
 
-    std::vector<std::vector<int>> getboardstate();
+    std::vector<std::vector<unsigned int>> getboardstate();
 
     direction getlastmove();
     std::vector<std::vector<int>> getanimationinfo();
@@ -27,10 +28,10 @@ public:
 
 
 private:
-    const unsigned int bsize;
+    unsigned int bsize;
     unsigned long score;
     bool haswonb;
-    std::vector<std::vector<int>> boardstate;
+    std::vector<std::vector<unsigned int>> boardstate;
 
     direction lastmove;
     std::vector<std::vector<int>> animationinfo;

@@ -28,6 +28,7 @@ public slots:
     void start_pressed();
     void cancel_pressed();
     void new_game();
+    void save_state();
 
 private:
     QLabel *infotext;

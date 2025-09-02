@@ -17,17 +17,22 @@ class boardwindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit boardwindow(int size=3,QWidget *parent = nullptr);
+    explicit boardwindow(int size=4,QWidget *parent = nullptr);
+    explicit boardwindow(QString gamestatestring,QWidget *parent = nullptr);
     ~boardwindow();
+
+    QString getgamestring();
 
 signals:
     void game_end();
 
 private:
-    const int boardsize;
+    int boardsize;
 
     int tileshstart,tilesvstart,tilesize,tilespacing;
     int winwidth,winhight;
+
+    void setsizes();
 
 
 
@@ -35,10 +40,13 @@ private:
     QPushButton * newgamebutton;
     QLabel *highscorelabel;
 
+
     QLabel *boardlabel;
     std::vector<std::vector<QLabel *>> tiles;
 
+    void initializelables();
     void initializetiles();
+
 
     void updatetiles();
     static const char styles[100];

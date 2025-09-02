@@ -1,6 +1,7 @@
 #include "startwindow.h"
 
 #include <QApplication>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,11 @@ int main(int argc, char *argv[])
 
 
     StartWindow w;
-    w.show();
+    QObject::connect(&a,&QApplication::aboutToQuit,&w,&StartWindow::save_state);
+
+    QSettings set;
+    if(!set.value("RestartGame").toBool())
+        w.show();
+
     return a.exec();
 }
