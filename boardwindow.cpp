@@ -23,6 +23,8 @@ boardwindow::boardwindow(int size,QWidget *parent)
 
     updatetiles();
 
+    haswon=false;
+
 }
 
 boardwindow::boardwindow(QString gamestring,QWidget *parent)
