@@ -9,11 +9,6 @@ boardwindow::boardwindow(int size,QWidget *parent)
     b{(unsigned int) boardsize},
     tiles{(unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr)}{
 
-    QSettings settings;
-    QString str;
-    str.setNum(boardsize);
-    highscore=settings.value(str+"/HighScore").toInt();
-
     setsizes();
 
     resize(QSize(winwidth,winhight));
@@ -54,11 +49,6 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
     b=board(boardsize,score,newboard);
 
     tiles=std::vector<std::vector<QLabel *>>((unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr));
-
-    QSettings settings;
-    QString str;
-    str.setNum(boardsize);
-    highscore=settings.value(str+"/HighScore").toInt();
 
     setsizes();
 
@@ -205,7 +195,12 @@ void boardwindow::initializelables(){
     newgamebutton->setGeometry(winwidth/2-50,15,100,40);
     connect(newgamebutton,&QPushButton::pressed,this,&boardwindow::game_end);
 
+
+    QSettings settings;
     QString str;
+    str.setNum(boardsize);
+    highscore=settings.value(str+"/HighScore").toInt();
+
     str.setNum(highscore);
     highscorelabel=new QLabel(tr("High Score\n")+str,this);
     highscorelabel->setGeometry(winwidth-100-10,15,100,40);

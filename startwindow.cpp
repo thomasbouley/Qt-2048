@@ -1,6 +1,8 @@
 #include "startwindow.h"
 #include <QSettings>
 
+#include <iostream>
+
 StartWindow::StartWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -36,10 +38,19 @@ StartWindow::StartWindow(QWidget *parent)
     bw=nullptr;
 
     QSettings set;
+    try{
     if(set.value("RestartGame").toBool()){
         bw=new boardwindow(set.value("SavedGame").toString(),this);
         connect(bw,&boardwindow::game_end,this,&StartWindow::new_game);
         bw->show();
+    }
+    }
+    catch(std::exception &e){
+        delete bw;
+        bw=nullptr;
+        std::cerr<<"Game restart faled because of " << e.what() <<std::endl;
+        set.setValue("RestartGame",false);
+        set.sync();
     }
 
 }
