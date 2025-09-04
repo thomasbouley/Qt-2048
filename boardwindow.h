@@ -49,8 +49,10 @@ private:
 
 
     void updatetiles();
-    static const char styles[100];
+    static const char styles[2][100];
     static const char styletable[13][70];
+
+    int tilesfontsize(int value);
 
     void updatescore();
 

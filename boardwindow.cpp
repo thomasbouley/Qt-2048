@@ -1,6 +1,7 @@
 #include "boardwindow.h"
 #include <QSettings>
 
+#include <cmath>
 
 boardwindow::boardwindow(int size,QWidget *parent)
     : QMainWindow{parent},
@@ -80,6 +81,7 @@ void boardwindow::updatetiles(){
     std::vector<std::vector<unsigned int>> bs=b.getboardstate();
     int val=0;
     QString str;
+    int fontsize;
     for(int i=0;i<boardsize;i++){
         for(int j=0;j<boardsize;j++){
             val=bs[i][j];
@@ -88,15 +90,28 @@ void boardwindow::updatetiles(){
             }
             else if(val<13){
                 tiles[i][j]->setText(str.setNum(1L << val));
+                fontsize=tilesfontsize(val);
+                tiles[i][j]->setStyleSheet(QString(styles[0])+std::to_string(fontsize).c_str()+styles[1]+styletable[val-1]);
                 tiles[i][j]->show();
-                tiles[i][j]->setStyleSheet(QString(styles)+styletable[val-1]);
             }
             else{
                 tiles[i][j]->setText(str.setNum(1L << val));
+                fontsize=tilesfontsize(val);
+                tiles[i][j]->setStyleSheet(QString(styles[0])+std::to_string(fontsize).c_str()+styles[1]+styletable[12]);
                 tiles[i][j]->show();
-                tiles[i][j]->setStyleSheet(QString(styles)+styletable[12]);
             }
         }
+    }
+}
+
+int boardwindow::tilesfontsize(int value){
+    int numdigits;
+    numdigits=std::ceil(.30103 *value);
+    if(numdigits>4){
+        return std::round(30* 4.0 / numdigits);
+    }
+    else{
+        return 30;
     }
 }
 
@@ -248,8 +263,8 @@ const char boardwindow::styletable[13][70]={"color: rgb(118,  110, 102); backgro
                                  "color: rgb(249, 246, 242); background-color: rgb(60 , 58 , 51 )",
                                  "color: rgb(249, 246, 242); background-color: rgb(45 , 44 , 38 )"};
 
-const char boardwindow::styles[100]="font: Helvetica;"
-                                      "font: bold 30px;"
+const char boardwindow::styles[2][100]={"font: Helvetica;"
+                                      "font: bold ","px;"
                                       "border-radius: 10px;"
-                                      "border-style: outset;";
+                                      "border-style: outset;"};
 
