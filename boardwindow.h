@@ -23,6 +23,9 @@ public:
 
     QString getgamestring();
 
+public slots:
+    void reset_highscore();
+
 signals:
     void game_end();
 
@@ -48,6 +51,14 @@ private:
     void initializetiles();
 
 
+    void createActions();
+    void createMenus();
+
+    QMenu *fileMenu;
+    QAction *resetAct;
+    QAction *newAct;
+
+
     void updatetiles();
     static const char styles[2][100];
     static const char styletable[13][70];
@@ -57,6 +68,8 @@ private:
     void updatescore();
 
     void keyPressEvent(QKeyEvent *);
+
+    void closeEvent(QCloseEvent *);
 
     board b;
     bool haswon;

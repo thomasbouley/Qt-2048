@@ -1,7 +1,9 @@
 #include "startwindow.h"
 #include <QSettings>
+#include <QMenuBar>
 
 #include <iostream>
+
 
 StartWindow::StartWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,11 +31,16 @@ StartWindow::StartWindow(QWidget *parent)
 
     start= new QPushButton(tr("Start"), this);
     start->setGeometry(QRect(QPoint(20, 45), QSize(60, 25)));
-    connect(start, &QPushButton::pressed, this, &StartWindow::start_pressed);
+    start->setDefault(true);
+    connect(start, &QPushButton::clicked, this, &StartWindow::start_pressed);
+
 
     cancel= new QPushButton(tr("Cancel"), this);
     cancel->setGeometry(QRect(QPoint(120, 45), QSize(60, 25)));
-    connect(cancel, &QPushButton::pressed, this, &StartWindow::cancel_pressed);
+    connect(cancel, &QPushButton::clicked, this, &StartWindow::cancel_pressed);
+
+    createActions();
+    createMenus();
 
     bw=nullptr;
 
@@ -57,6 +64,17 @@ StartWindow::StartWindow(QWidget *parent)
 
 StartWindow::~StartWindow() {}
 
+void StartWindow::createActions(){
+    resetAct=new QAction("Reset High Scores",this);
+    resetAct->setShortcut(QKeySequence("Ctrl+Shift+R"));
+    connect(resetAct, &QAction::triggered,this,&StartWindow::reset_scores);
+}
+
+void StartWindow::createMenus(){
+    fileMenu=menuBar()->addMenu(tr("File"));
+    fileMenu->addAction(resetAct);
+
+}
 
 void StartWindow::start_pressed(){
     if(number->hasAcceptableInput()){
@@ -66,6 +84,7 @@ void StartWindow::start_pressed(){
         hide();
         bw->show();
     }
+
 }
 
 void StartWindow::cancel_pressed(){
@@ -94,4 +113,9 @@ void StartWindow::save_state(){
     else{
         settings.setValue("RestartGame",false);
     }
+}
+
+void StartWindow::reset_scores(){
+    QSettings settings;
+    settings.clear();
 }

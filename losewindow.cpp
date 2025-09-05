@@ -14,7 +14,7 @@ loseWindow::loseWindow(QWidget *parent)
 
     closebutton=new QPushButton("Exit",this);
     closebutton->setGeometry(140,50,100,50);
-    connect(closebutton,&QPushButton::released,this,&loseWindow::close_pressed);
+    connect(closebutton,&QPushButton::clicked,this,&loseWindow::close_pressed);
 
 }
 
@@ -36,14 +36,14 @@ winWindow::winWindow(QWidget *parent)
 
     contbutton=new QPushButton(tr("Contune Playing"),this);
     contbutton->setGeometry(10,50,150,50);
-    connect(contbutton,&QPushButton::pressed,this,&winWindow::go_pressed);
+    connect(contbutton,&QPushButton::clicked,this,&winWindow::go_pressed);
 
     newgamebutton=new QPushButton(tr("New Game"),this);
     newgamebutton->setGeometry(170,50,100,50);
 
     closebutton=new QPushButton(tr("Exit"),this);
     closebutton->setGeometry(280,50,100,50);
-    connect(closebutton,&QPushButton::pressed,this,&winWindow::close_pressed);
+    connect(closebutton,&QPushButton::clicked,this,&winWindow::close_pressed);
 
 }
 

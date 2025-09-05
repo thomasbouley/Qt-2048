@@ -29,6 +29,8 @@ public slots:
     void cancel_pressed();
     void new_game();
     void save_state();
+    void reset_scores();
+
 
 private:
     QLabel *infotext;
@@ -36,6 +38,12 @@ private:
     QValidator *validator;
     QPushButton *start;
     QPushButton *cancel;
+
+    void createActions();
+    void createMenus();
+
+    QMenu *fileMenu;
+    QAction *resetAct;
 
     boardwindow *bw;
 };

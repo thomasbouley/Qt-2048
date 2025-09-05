@@ -1,5 +1,7 @@
 #include "boardwindow.h"
 #include <QSettings>
+#include <QMenuBar>
+#include <QApplication>
 
 #include <cmath>
 
@@ -18,6 +20,9 @@ boardwindow::boardwindow(int size,QWidget *parent)
     initializetiles();
 
     updatetiles();
+
+    createActions();
+    createMenus();
 
     haswon=false;
 
@@ -60,6 +65,9 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
 
     updatetiles();
 
+    createActions();
+    createMenus();
+
     haswon=b.haswon();
 
     updatescore();
@@ -96,9 +104,9 @@ void boardwindow::updatetiles(){
 
 int boardwindow::tilesfontsize(int value){
     int numdigits;
-    numdigits=std::ceil(.30103 *value);
+    numdigits=std::ceil(.30103 * value);//.30103==log10(2)
     if(numdigits>4){
-        return std::round(30* 4.0 / numdigits);
+        return std::round(30 * 4.0 / numdigits);
     }
     else{
         return 30;
@@ -146,24 +154,29 @@ void boardwindow::keyPressEvent(QKeyEvent *event){
     updatescore();
     if(b.haswon() && !haswon){
         ww=new winWindow(this);
-        connect(ww->newgamebutton,&QPushButton::pressed,this,&boardwindow::game_end);
+        connect(ww->newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
         haswon=true;
         ww->show();
     }
     if(b.haslost()){
         lw=new loseWindow(this);
-        connect(lw->newgamebutton,&QPushButton::pressed,this,&boardwindow::game_end);
+        connect(lw->newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
         lw->show();
     }
     QWidget::keyPressEvent(event);
 }
+
+void boardwindow::closeEvent(QCloseEvent *event){
+    QApplication::quit();
+}
+
 
 void boardwindow::updatescore(){
     unsigned long score=b.getscore();
     QString str;
     str.setNum(score);
     scorelabel->setText(tr("Score: \n")+str);
-    if(score>highscore){
+    if(score>=highscore){
         QSettings settings;
         QString sizestr;
         sizestr.setNum(boardsize);
@@ -193,7 +206,7 @@ void boardwindow::initializelables(){
 
     newgamebutton=new QPushButton(tr("New Game"),this);
     newgamebutton->setGeometry(winwidth/2-50,15,100,40);
-    connect(newgamebutton,&QPushButton::pressed,this,&boardwindow::game_end);
+    connect(newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
 
 
     QSettings settings;
@@ -242,6 +255,29 @@ QString boardwindow::getgamestring(){
     gamestate+=int_arr_2d_to_string(b.getboardstate());
 
     return gamestate;
+}
+
+void boardwindow::createActions(){
+    resetAct=new QAction("Reset High Scores",this);
+    resetAct->setShortcut(QKeySequence("Ctrl+Shift+R"));
+    connect(resetAct, &QAction::triggered,this,&boardwindow::reset_highscore);
+    newAct=new QAction("New Game",this);
+    newAct->setShortcut(QKeySequence("Ctrl+N"));
+    connect(newAct, &QAction::triggered,this,&boardwindow::game_end);
+}
+
+void boardwindow::createMenus(){
+    fileMenu=menuBar()->addMenu(tr("File"));
+    fileMenu->addAction(newAct);
+    fileMenu->addAction(resetAct);
+}
+
+
+void boardwindow::reset_highscore(){
+    QSettings settings;
+    settings.clear();
+    highscore=0;
+    updatescore();
 }
 
 const char boardwindow::styletable[13][70]={"color: rgb(118,  110, 102); background-color: rgb(236, 228, 219)",
