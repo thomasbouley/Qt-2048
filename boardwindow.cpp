@@ -266,10 +266,10 @@ QString boardwindow::getgamestring(){
 }
 
 void boardwindow::createActions(){
-    resetAct=new QAction("Reset High Scores",this);
+    resetAct=new QAction(tr("Reset High Scores"),this);
     resetAct->setShortcut(QKeySequence("Ctrl+Shift+R"));
     connect(resetAct, &QAction::triggered,this,&boardwindow::reset_highscore);
-    newAct=new QAction("New Game",this);
+    newAct=new QAction(tr("New Game"),this);
     newAct->setShortcut(QKeySequence("Ctrl+N"));
     connect(newAct, &QAction::triggered,this,&boardwindow::game_end);
 }

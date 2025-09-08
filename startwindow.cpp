@@ -65,7 +65,7 @@ StartWindow::StartWindow(QWidget *parent)
 StartWindow::~StartWindow(){}
 
 void StartWindow::createActions(){
-    resetAct=new QAction("Reset High Scores",this);
+    resetAct=new QAction(tr("Reset High Scores"),this);
     resetAct->setShortcut(QKeySequence("Ctrl+Shift+R"));
     connect(resetAct, &QAction::triggered,this,&StartWindow::reset_scores);
 }
@@ -80,7 +80,6 @@ void StartWindow::start_pressed(){
     if(number->hasAcceptableInput()){
         bw=new boardwindow(number->text().toInt(),this);
         connect(bw,&boardwindow::game_end,this,&StartWindow::new_game);
-        start->setDown(false);
         hide();
         bw->show();
     }

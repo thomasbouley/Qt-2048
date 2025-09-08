@@ -10,10 +10,10 @@ loseWindow::loseWindow(QWidget *parent)
     message=new QLabel(tr("Game Over!"),this);
     message->setGeometry(65,10,120,25);
 
-    newgamebutton=new QPushButton("New Game",this);
+    newgamebutton=new QPushButton(tr("New Game"),this);
     newgamebutton->setGeometry(10,50,100,50);
 
-    closebutton=new QPushButton("Exit",this);
+    closebutton=new QPushButton(tr("Exit"),this);
     closebutton->setGeometry(140,50,100,50);
     connect(closebutton,&QPushButton::clicked,this,&loseWindow::close_pressed);
 
