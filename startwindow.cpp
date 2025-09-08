@@ -62,7 +62,7 @@ StartWindow::StartWindow(QWidget *parent)
 
 }
 
-StartWindow::~StartWindow() {}
+StartWindow::~StartWindow(){}
 
 void StartWindow::createActions(){
     resetAct=new QAction("Reset High Scores",this);
@@ -119,3 +119,6 @@ void StartWindow::reset_scores(){
     QSettings settings;
     settings.clear();
 }
+
+
+

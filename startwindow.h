@@ -46,5 +46,6 @@ private:
     QAction *resetAct;
 
     boardwindow *bw;
+
 };
 #endif // STARTWINDOW_H

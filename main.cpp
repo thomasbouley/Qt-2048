@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain("bouley.com");
     a.setApplicationName("2048");
 
-
     StartWindow w;
     QObject::connect(&a,&QApplication::aboutToQuit,&w,&StartWindow::save_state);
 

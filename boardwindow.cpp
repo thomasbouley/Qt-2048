@@ -4,6 +4,7 @@
 #include <QApplication>
 
 #include <cmath>
+#include <iostream>
 
 boardwindow::boardwindow(int size,QWidget *parent)
     : QMainWindow{parent},
@@ -13,6 +14,7 @@ boardwindow::boardwindow(int size,QWidget *parent)
 
     setsizes();
 
+//    setMinimumWidth(340);
     resize(QSize(winwidth,winhight));
 
     initializelables();
@@ -128,6 +130,11 @@ void boardwindow::setsizes(){
 
 }
 
+/*
+void boardwindow::resizeEvent(QResizeEvent *event){
+    QMainWindow::resizeEvent(event);
+}*/
+
 void boardwindow::keyPressEvent(QKeyEvent *event){
     int keyPressed=event->key();
     switch (keyPressed) {
@@ -167,7 +174,8 @@ void boardwindow::keyPressEvent(QKeyEvent *event){
 }
 
 void boardwindow::closeEvent(QCloseEvent *event){
-    QApplication::quit();
+    QApplication::exit();
+    event->accept();
 }
 
 

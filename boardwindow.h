@@ -71,6 +71,8 @@ private:
 
     void closeEvent(QCloseEvent *);
 
+//    void resizeEvent(QResizeEvent *);
+
     board b;
     bool haswon;
     long highscore;

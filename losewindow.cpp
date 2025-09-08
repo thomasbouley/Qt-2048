@@ -1,6 +1,7 @@
 #include "losewindow.h"
 #include <QApplication>
 
+
 loseWindow::loseWindow(QWidget *parent)
     : QMainWindow{parent}{
 
