@@ -55,12 +55,6 @@ void boardwindow::initializewidgets(){
 
     setsizes();
 
-/*    QSizePolicy sizepol;
-    sizepol.setHeightForWidth(true);
-    sizepol.setHorizontalPolicy(QSizePolicy::Preferred);
-
-    setSizePolicy(sizepol);*/
-
     setMinimumWidth(340);
     resize(QSize(winwidth,winhight));
 
@@ -148,10 +142,12 @@ void boardwindow::resizeEvent(QResizeEvent *event){
     resizetiles();
     updatetiles();
     if(!breakrize){
-        resize(QSize(winwidth,winhight));
         breakrize=true;
+        resize(QSize(winwidth,winhight));
     }
-    breakrize=false;
+    else{
+        breakrize=false;
+    }
     QMainWindow::resizeEvent(event);
 }
 
