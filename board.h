@@ -13,7 +13,7 @@ public:
     ~board();
 
     enum class direction;
-    void updateboard(direction d);
+    bool updateboard(direction d);
     unsigned long getscore();
     unsigned int getsize();
 

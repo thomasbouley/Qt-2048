@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QKeyEvent>
 
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 
 #include <vector>
 
@@ -25,6 +27,7 @@ public:
 
 public slots:
     void reset_highscore();
+    void anim_finished(QAbstractAnimation::State , QAbstractAnimation::State );
 
 signals:
     void game_end();
@@ -86,6 +89,12 @@ private:
 
     loseWindow *lw;
     winWindow *ww;
+
+    void initalizeanimations();
+    void startanimations();
+    std::vector<std::vector<QPropertyAnimation *>> animationtable;
+    QParallelAnimationGroup *group;
+
 };
 
 #endif // BOARDWINDOW_H

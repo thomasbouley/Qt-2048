@@ -63,7 +63,7 @@ board::~board(){}
 
 
 
-void board::updateboard(direction d){
+bool board::updateboard(direction d){
 
     _zeroanimationinfo();
 
@@ -109,8 +109,7 @@ void board::updateboard(direction d){
     if(didmove)
         addrandom();
 
-
-
+    return didmove;
 }
 
 bool board::haslost(){

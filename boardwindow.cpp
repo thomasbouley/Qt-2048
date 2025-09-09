@@ -10,7 +10,8 @@ boardwindow::boardwindow(int size,QWidget *parent)
     : QMainWindow{parent},
     boardsize{size},
     b{(unsigned int) boardsize},
-    tiles{(unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr)}{
+    tiles{(unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr)},
+    animationtable{(unsigned long) boardsize,std::vector<QPropertyAnimation *>(boardsize,nullptr)}{
 
     initializewidgets();
 
@@ -42,7 +43,7 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
     b=board(boardsize,score,newboard);
 
     tiles=std::vector<std::vector<QLabel *>>((unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr));
-
+    animationtable=std::vector<std::vector<QPropertyAnimation *>>((unsigned long) boardsize,std::vector<QPropertyAnimation *>(boardsize,nullptr));
     initializewidgets();
 
     updatescore();
@@ -61,6 +62,8 @@ void boardwindow::initializewidgets(){
     initializelables();
 
     initializetiles();
+
+    initalizeanimations();
 
     updatetiles();
 
@@ -152,28 +155,31 @@ void boardwindow::resizeEvent(QResizeEvent *event){
 }
 
 void boardwindow::keyPressEvent(QKeyEvent *event){
+    group->stop();
+    bool didmove=false;
     int keyPressed=event->key();
     switch (keyPressed) {
     case Qt::Key_W:
     case Qt::Key_Up:
-        b.updateboard(board::direction::Up);
+        didmove=b.updateboard(board::direction::Up);
         break;
     case Qt::Key_S:
     case Qt::Key_Down:
-        b.updateboard(board::direction::Down);
+        didmove=b.updateboard(board::direction::Down);
         break;
     case Qt::Key_A:
     case Qt::Key_Left:
-        b.updateboard(board::direction::Left);
+        didmove=b.updateboard(board::direction::Left);
         break;
     case Qt::Key_D:
     case Qt::Key_Right:
-        b.updateboard(board::direction::Right);
+        didmove=b.updateboard(board::direction::Right);
         break;
     default:
         break;
     }
-    updatetiles();
+    if(didmove)
+        startanimations();
     updatescore();
     if(b.haswon() && !haswon){
         ww=new winWindow(this);
@@ -317,6 +323,60 @@ void boardwindow::reset_highscore(){
     settings.clear();
     highscore=0;
     updatescore();
+}
+
+
+void boardwindow::initalizeanimations(){
+    group=new QParallelAnimationGroup(this);
+    for(int i=0;i<boardsize;i++){
+        for(int j=0;j<boardsize;j++){
+            animationtable[i][j]=new QPropertyAnimation(tiles[i][j],"pos",this);
+            group->addAnimation(animationtable[i][j]);
+        }
+    }
+    connect(group,&QParallelAnimationGroup::stateChanged,this,&boardwindow::anim_finished);
+}
+
+void boardwindow::startanimations(){
+    board::direction ld=b.getlastmove();
+    QPoint dir;
+    switch (ld) {
+    case board::direction::Up:
+        dir.setX(0);
+        dir.setY(-tilesize);
+        break;
+    case board::direction::Down:
+        dir.setX(0);
+        dir.setY(tilesize);
+        break;
+    case board::direction::Left:
+        dir.setX(-tilesize);
+        dir.setY(0);
+        break;
+    case board::direction::Right:
+        dir.setX(tilesize);
+        dir.setY(0);
+        break;
+    }
+
+    std::vector<std::vector<int>> amounts=b.getanimationinfo();
+    QPoint cur;
+    for(int i=0;i<boardsize;i++){
+        for(int j=0;j<boardsize;j++){
+            cur=QPoint(tileshstart + j*tilespacing, tilesvstart + i*tilespacing);
+            animationtable[i][j]->setDuration(50);
+            animationtable[i][j]->setStartValue(cur);
+            animationtable[i][j]->setEndValue(cur+amounts[i][j]*dir);
+        }
+    }
+    group->start();
+}
+
+void boardwindow::anim_finished(QAbstractAnimation::State newState, QAbstractAnimation::State oldState){
+    if(newState==QAbstractAnimation::Stopped){
+        resizetiles();
+        updatetiles();
+    }
 }
 
 const char boardwindow::styletable[13][70]={"color: rgb(118,  110, 102); background-color: rgb(236, 228, 219)",
