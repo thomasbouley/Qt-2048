@@ -36,6 +36,7 @@ private:
     int winwidth,winhight;
 
     void setsizes();
+    void setsizes(int newwidth);
 
 
 
@@ -47,8 +48,13 @@ private:
     QLabel *boardlabel;
     std::vector<std::vector<QLabel *>> tiles;
 
+    void initializewidgets();
+
     void initializelables();
     void initializetiles();
+
+    void resizelables();
+    void resizetiles();
 
 
     void createActions();
@@ -71,7 +77,8 @@ private:
 
     void closeEvent(QCloseEvent *);
 
-//    void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *);
+    bool breakrize;
 
     board b;
     bool haswon;

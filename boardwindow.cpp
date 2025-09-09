@@ -12,21 +12,7 @@ boardwindow::boardwindow(int size,QWidget *parent)
     b{(unsigned int) boardsize},
     tiles{(unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr)}{
 
-    setsizes();
-
-//    setMinimumWidth(340);
-    resize(QSize(winwidth,winhight));
-
-    initializelables();
-
-    initializetiles();
-
-    updatetiles();
-
-    createActions();
-    createMenus();
-
-    haswon=false;
+    initializewidgets();
 
 }
 
@@ -57,8 +43,25 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
 
     tiles=std::vector<std::vector<QLabel *>>((unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr));
 
+    initializewidgets();
+
+    updatescore();
+}
+
+boardwindow::~boardwindow(){}//All QWidget * members have this as parent
+
+void boardwindow::initializewidgets(){
+    breakrize=false ;
+
     setsizes();
 
+/*    QSizePolicy sizepol;
+    sizepol.setHeightForWidth(true);
+    sizepol.setHorizontalPolicy(QSizePolicy::Preferred);
+
+    setSizePolicy(sizepol);*/
+
+    setMinimumWidth(340);
     resize(QSize(winwidth,winhight));
 
     initializelables();
@@ -71,11 +74,8 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
     createMenus();
 
     haswon=b.haswon();
-
-    updatescore();
 }
 
-boardwindow::~boardwindow(){}//All QWidget * members have this as parent
 
 void boardwindow::updatetiles(){
     std::vector<std::vector<unsigned int>> bs=b.getboardstate();
@@ -105,14 +105,16 @@ void boardwindow::updatetiles(){
 }
 
 int boardwindow::tilesfontsize(int value){
+    int deffsize;
     int numdigits;
     numdigits=std::ceil(.30103 * value);//.30103==log10(2)
     if(numdigits>4){
-        return std::round(30 * 4.0 / numdigits);
+         deffsize=std::round(30 * 4.0 / numdigits);
     }
     else{
-        return 30;
+        deffsize=30;
     }
+    return std::round(deffsize * tilesize / 80.0);
 }
 
 void boardwindow::setsizes(){
@@ -130,10 +132,28 @@ void boardwindow::setsizes(){
 
 }
 
-/*
+void boardwindow::setsizes(int newwidth){
+    winwidth=newwidth;
+
+    tilespacing=std::round(((double) winwidth- 2 * tileshstart +10)/boardsize);
+    tilesize=tilespacing-10;
+
+    winhight=tilesvstart+boardsize* tilespacing+10;
+}
+
+
 void boardwindow::resizeEvent(QResizeEvent *event){
+    setsizes(event->size().width());
+    resizelables();
+    resizetiles();
+    updatetiles();
+    if(!breakrize){
+        resize(QSize(winwidth,winhight));
+        breakrize=true;
+    }
+    breakrize=false;
     QMainWindow::resizeEvent(event);
-}*/
+}
 
 void boardwindow::keyPressEvent(QKeyEvent *event){
     int keyPressed=event->key();
@@ -234,6 +254,21 @@ void boardwindow::initializelables(){
                               "border-width: 5px;"
                               "border-radius: 20px;"
                               "border-color: grey");
+}
+
+
+void boardwindow::resizetiles(){
+    for(int i=0;i<boardsize;i++){
+        for(int j=0;j<boardsize;j++){
+            tiles[i][j]->setGeometry(tileshstart + j*tilespacing, tilesvstart + i*tilespacing,tilesize,tilesize);
+        }
+    }
+}
+
+void boardwindow::resizelables(){
+    newgamebutton->setGeometry(winwidth/2-50,15,100,40);
+    highscorelabel->setGeometry(winwidth-100-10,15,100,40);
+    boardlabel->setGeometry(tileshstart-10,tilesvstart-10,tilespacing*boardsize+10,tilespacing*boardsize+10);
 }
 
 std::string int_arr_2d_to_string(std::vector<std::vector<unsigned int>> arr_2d){
