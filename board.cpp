@@ -1,6 +1,7 @@
 #include "board.h"
 
 #include <utility>
+#include <stdexcept>
 
 board::board(unsigned int size):
     bsize{size},
