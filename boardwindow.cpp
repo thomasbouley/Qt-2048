@@ -297,7 +297,7 @@ QString boardwindow::getgamestring(){
     gamestate+=temp+"|";
     temp.setNum(b.getscore());
     gamestate+=temp+"|";
-    gamestate+=int_arr_2d_to_string(b.getboardstate());
+    gamestate+=QString::fromStdString(int_arr_2d_to_string(b.getboardstate()));
 
     return gamestate;
 }
