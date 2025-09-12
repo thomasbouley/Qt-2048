@@ -36,6 +36,7 @@ private:
     int boardsize;
 
     int tileshstart,tilesvstart,tilesize,tilespacing;
+    int labelvstart;
     int winwidth,winhight;
 
     void setsizes();

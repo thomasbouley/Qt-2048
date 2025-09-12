@@ -44,6 +44,7 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
 
     tiles=std::vector<std::vector<QLabel *>>((unsigned long) boardsize,std::vector<QLabel *>(boardsize,nullptr));
     animationtable=std::vector<std::vector<QPropertyAnimation *>>((unsigned long) boardsize,std::vector<QPropertyAnimation *>(boardsize,nullptr));
+
     initializewidgets();
 
     updatescore();
@@ -52,6 +53,12 @@ boardwindow::boardwindow(QString gamestring,QWidget *parent)
 boardwindow::~boardwindow(){}//All QWidget * members have this as parent
 
 void boardwindow::initializewidgets(){
+
+    createActions();
+    createMenus();
+
+    this->setFocusPolicy(Qt::StrongFocus);
+
     breakrize=false ;
 
     setsizes();
@@ -66,9 +73,6 @@ void boardwindow::initializewidgets(){
     initalizeanimations();
 
     updatetiles();
-
-    createActions();
-    createMenus();
 
     haswon=b.haswon();
 }
@@ -115,9 +119,17 @@ int boardwindow::tilesfontsize(int value){
 }
 
 void boardwindow::setsizes(){
-    tileshstart=20,tilesvstart=75;
+
+    int mh=0;
+    if(!(menuBar()->isNativeMenuBar())){
+        mh=menuBar()->size().height();
+    }
+
+    tileshstart=20,tilesvstart=75+mh;
     tilesize=80;
     tilespacing=tilesize+10;
+    
+    labelvstart=15+mh;
 
     winhight=tilesvstart+boardsize* tilespacing+10;
     winwidth=2*tileshstart+boardsize* tilespacing - 10;
@@ -230,12 +242,14 @@ void boardwindow::initializetiles(){
 }
 
 void boardwindow::initializelables(){
+    
     scorelabel=new QLabel(tr("Score\n 0"),this);
-    scorelabel->setGeometry(10,15,100,40);
+    scorelabel->setGeometry(10,labelvstart,100,40);
     scorelabel->setAlignment(Qt::AlignCenter);
+    
 
     newgamebutton=new QPushButton(tr("New Game"),this);
-    newgamebutton->setGeometry(winwidth/2-50,15,100,40);
+    newgamebutton->setGeometry(winwidth/2-50,labelvstart,100,40);
     connect(newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
 
 
@@ -246,8 +260,9 @@ void boardwindow::initializelables(){
 
     str.setNum(highscore);
     highscorelabel=new QLabel(tr("High Score\n")+str,this);
-    highscorelabel->setGeometry(winwidth-100-10,15,100,40);
+    highscorelabel->setGeometry(winwidth-110-10,labelvstart,110,40);
     highscorelabel->setAlignment(Qt::AlignCenter);
+    
 
     boardlabel=new QLabel(this);
     boardlabel->setGeometry(tileshstart-10,tilesvstart-10,tilespacing*boardsize+10,tilespacing*boardsize+10);
@@ -268,8 +283,8 @@ void boardwindow::resizetiles(){
 }
 
 void boardwindow::resizelables(){
-    newgamebutton->setGeometry(winwidth/2-50,15,100,40);
-    highscorelabel->setGeometry(winwidth-100-10,15,100,40);
+    newgamebutton->setGeometry(winwidth/2-50,labelvstart,100,40);
+    highscorelabel->setGeometry(winwidth-110-10,labelvstart,110,40);
     boardlabel->setGeometry(tileshstart-10,tilesvstart-10,tilespacing*boardsize+10,tilespacing*boardsize+10);
 }
 

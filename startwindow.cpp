@@ -8,7 +8,8 @@
 StartWindow::StartWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setFixedSize(200, 80);
+
+    setFixedSize(210, 80);
 
     setStyleSheet("QLabel {color: grey;"
                               "font: Helvetica;"
@@ -18,29 +19,37 @@ StartWindow::StartWindow(QWidget *parent)
                                  "font: bold 15px;"
                                  "background-color: lightgray;}");
 
+
+    createActions();
+    createMenus();
+
+    int mh=0;
+    if(!(menuBar()->isNativeMenuBar())){
+        mh=menuBar()->size().height();
+    }
+
+    setFixedSize(210, 80+mh);
+
     infotext= new QLabel(tr("Enter board size:"), this);
-    infotext->setGeometry(QRect(QPoint(10, 10), QSize(150, 25)));
+    infotext->setGeometry(QRect(QPoint(10, 10+mh), QSize(163,25)));
 
     number= new QLineEdit("4", this);
-    number->move(QPoint(170,10));
-    number->setFixedSize(20,25);
+    number->move(QPoint(183,10+mh));
+    number->setFixedSize(17,25);
     number->setFont(QFont("Helvetica",15));
 
     validator=new QIntValidator(2,6,number);
     number->setValidator(validator);
 
     start= new QPushButton(tr("Start"), this);
-    start->setGeometry(QRect(QPoint(20, 45), QSize(60, 25)));
+    start->setGeometry(QRect(QPoint(20, 45+mh), QSize(60, 25)));
     start->setDefault(true);
     connect(start, &QPushButton::clicked, this, &StartWindow::start_pressed);
 
 
     cancel= new QPushButton(tr("Cancel"), this);
-    cancel->setGeometry(QRect(QPoint(120, 45), QSize(60, 25)));
+    cancel->setGeometry(QRect(QPoint(120, 45+mh), QSize(60, 25)));
     connect(cancel, &QPushButton::clicked, this, &StartWindow::cancel_pressed);
-
-    createActions();
-    createMenus();
 
     bw=nullptr;
 
