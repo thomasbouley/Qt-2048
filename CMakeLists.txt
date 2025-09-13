@@ -28,6 +28,8 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
         boardwindow.h boardwindow.cpp
         board.h board.cpp
         losewindow.h losewindow.cpp
+        README.md
+        LICENSE.txt
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET 2048 APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
