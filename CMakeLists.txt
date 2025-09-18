@@ -12,10 +12,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+include_directories(
+	${PROJECT_SOURCE_DIR}/src
+)
+
 set(PROJECT_SOURCES
-        main.cpp
-        startwindow.cpp
-        startwindow.h
+        src/main.cpp
+        src/startwindow.cpp
+        src/startwindow.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -25,9 +29,9 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
     qt_add_executable(2048
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        boardwindow.h boardwindow.cpp
-        board.h board.cpp
-        losewindow.h losewindow.cpp
+        src/boardwindow.h src/boardwindow.cpp
+        src/board.h src/board.cpp
+        src/losewindow.h src/losewindow.cpp
         README.md
         LICENSE.txt
     )
