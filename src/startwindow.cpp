@@ -45,6 +45,7 @@ StartWindow::StartWindow(QWidget *parent)
     start->setGeometry(QRect(QPoint(20, 45+mh), QSize(60, 25)));
     start->setDefault(true);
     connect(start, &QPushButton::clicked, this, &StartWindow::start_pressed);
+    start->setToolTip(tr("Input a board size from 2 to 6"));
 
 
     cancel= new QPushButton(tr("Cancel"), this);

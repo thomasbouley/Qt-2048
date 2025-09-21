@@ -224,7 +224,7 @@ void boardwindow::updatescore(){
         sizestr.setNum(boardsize);
         highscore=score;
         settings.setValue(sizestr+"/HighScore",(int)highscore);
-        highscorelabel->setText(tr("HighScore: \n")+str);
+        highscorelabel->setText(tr("High Score: \n")+str);
     }
 }
 
