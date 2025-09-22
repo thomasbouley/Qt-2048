@@ -12,6 +12,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+
+include(CheckIncludeFiles)
+
+check_include_files("sys/socket.h" HAVE_UNIX_SOCKETS LANGUAGE CXX)
+if(HAVE_UNIX_SOCKETS)
+    add_compile_definitions(HAS_UNIX_SOCKETS)
+endif()
+
+
 include_directories(
 	${PROJECT_SOURCE_DIR}/src
 )
@@ -34,7 +43,9 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
         src/losewindow.h src/losewindow.cpp
         README.md
         LICENSE.txt
+        src/posixsighandle.h src/posixsighandle.cpp
     )
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET 2048 APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
