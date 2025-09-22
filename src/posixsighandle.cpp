@@ -8,7 +8,6 @@
 #include <sys/socket.h>
 #include <system_error>
 
-#include <vector>
 
 POSIXsighandle::POSIXsighandle(std::initializer_list<int> sigs,QObject *parent)
     : QObject(parent){
