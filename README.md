@@ -1,23 +1,22 @@
 # Qt-2048
-This is a clone of [2048](https://github.com/gabrielecirulli/2048) written in C++ using QT.
+This is a clone of [2048](https://github.com/gabrielecirulli/2048) written in C++ using Qt.
 
 ## Features 
 
 * Board sizes from 2x2 to 6x6. 
 
 * Been tested on macOS and an Xfce Linux desktop;
-should work on any desktop envorment supported by Qt.
+should work on any desktop environment supported by Qt.
 
-* May not look great on high DPI monitors; 
-improved high DPI monitor support.
+* May not look great on high DPI monitors.
 
-* Mobile support may be added in the future.
+* Improved high DPI monitor support and Mobile support may be added in the future.
 
 ## Screenshot 
 
 ![alt text](AppExample.png "Screenshot of a 5x5 board")
 
-A screenshot showing the aperance on macOS.
+A screenshot showing the appearance on macOS.
 
 ## Build Instructions
 
@@ -31,7 +30,7 @@ A screenshot showing the aperance on macOS.
 
 ### Build
 
-Clone the repository and configure a build directory:
+Clone the repository and configure the build directory:
 
 ```sh
 git clone https://github.com/thomasbouley/Qt-2048
@@ -54,7 +53,7 @@ cmake --build build/
 
 * macOS: `open build/2048.app`
 
-The executable or app bundled may be moved as desire to install them.   
+The executable or application bundled may be moved as desired to install them.   
 
 ## Contributing
 This project was created for my own education,

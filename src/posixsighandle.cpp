@@ -26,13 +26,13 @@ POSIXsighandle::POSIXsighandle(std::initializer_list<int> sigs,QObject *parent)
 
     for(int sig : sigs){
         if(sigaction(sig, &sa, nullptr) != 0){
-            throw std::system_error(errno, std::system_category(), "Failed to open SOCKET for SIGHUP");
+            throw std::system_error(errno, std::system_category(), "Failed to install signal handler");
         }
     }
 }
 
-void POSIXsighandle::signalHandler(int signo){
-    ::write(sigFd[0],&signo,sizeof(int));
+void POSIXsighandle::signalHandler(int signum){
+    ::write(sigFd[0],&signum,sizeof(int));
 }
 
 void POSIXsighandle::readsigsocket(){

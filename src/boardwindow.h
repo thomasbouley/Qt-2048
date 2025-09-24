@@ -54,10 +54,10 @@ private:
 
     void initializewidgets();
 
-    void initializelables();
+    void initializelabels();
     void initializetiles();
 
-    void resizelables();
+    void resizelabels();
     void resizetiles();
 
 

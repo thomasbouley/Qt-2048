@@ -22,7 +22,7 @@ public:
     static void signalHandler(int);
 
 signals:
-    void POSIXsig(int signo);
+    void POSIXsig(int signum);
 
 private slots:
     void readsigsocket();

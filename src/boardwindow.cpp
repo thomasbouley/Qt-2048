@@ -4,7 +4,6 @@
 #include <QApplication>
 
 #include <cmath>
-#include <iostream>
 
 boardwindow::boardwindow(int size,QWidget *parent)
     : QMainWindow{parent},
@@ -66,7 +65,7 @@ void boardwindow::initializewidgets(){
     setMinimumWidth(340);
     resize(QSize(winwidth,winhight));
 
-    initializelables();
+    initializelabels();
 
     initializetiles();
 
@@ -153,7 +152,7 @@ void boardwindow::setsizes(int newwidth){
 
 void boardwindow::resizeEvent(QResizeEvent *event){
     setsizes(event->size().width());
-    resizelables();
+    resizelabels();
     resizetiles();
     updatetiles();
     if(!breakrize){
@@ -190,19 +189,20 @@ void boardwindow::keyPressEvent(QKeyEvent *event){
     default:
         break;
     }
-    if(didmove)
+    if(didmove){
         startanimations();
-    updatescore();
-    if(b.haswon() && !haswon){
-        ww=new winWindow(this);
-        connect(ww->newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
-        haswon=true;
-        ww->show();
-    }
-    if(b.haslost()){
-        lw=new loseWindow(this);
-        connect(lw->newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
-        lw->show();
+        updatescore();
+        if(b.haswon() && !haswon){
+            ww=new winWindow(this);
+            connect(ww->newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
+            haswon=true;
+            ww->show();
+        }
+        if(b.haslost()){
+            lw=new loseWindow(this);
+            connect(lw->newgamebutton,&QPushButton::clicked,this,&boardwindow::game_end);
+            lw->show();
+        }
     }
     QWidget::keyPressEvent(event);
 }
@@ -220,10 +220,8 @@ void boardwindow::updatescore(){
     scorelabel->setText(tr("Score: \n")+str);
     if(score>=highscore){
         QSettings settings;
-        QString sizestr;
-        sizestr.setNum(boardsize);
         highscore=score;
-        settings.setValue(sizestr+"/HighScore",(int)highscore);
+        settings.setValue(QString::number(boardsize)+"/HighScore",(int)highscore);
         highscorelabel->setText(tr("High Score: \n")+str);
     }
 }
@@ -241,7 +239,7 @@ void boardwindow::initializetiles(){
     }
 }
 
-void boardwindow::initializelables(){
+void boardwindow::initializelabels(){
     
     scorelabel=new QLabel(tr("Score\n 0"),this);
     scorelabel->setGeometry(10,labelvstart,100,40);
@@ -282,7 +280,7 @@ void boardwindow::resizetiles(){
     }
 }
 
-void boardwindow::resizelables(){
+void boardwindow::resizelabels(){
     newgamebutton->setGeometry(winwidth/2-50,labelvstart,100,40);
     highscorelabel->setGeometry(winwidth-110-10,labelvstart,110,40);
     boardlabel->setGeometry(tileshstart-10,tilesvstart-10,tilespacing*boardsize+10,tilespacing*boardsize+10);
