@@ -53,4 +53,4 @@ void POSIXsighandle::readsigsocket(){
 
 int POSIXsighandle::sigFd[2]={0,0};
 
-#endif //HAS_UNIX_SOCKETS
+#endif //POSIXSIGHANDLE

@@ -3,6 +3,8 @@
 #include <utility>
 #include <stdexcept>
 
+#include <cstdint>
+
 board::board(unsigned int size):
     bsize{size},
     boardstate(size,std::vector<unsigned int>(size,0)),
@@ -10,7 +12,7 @@ board::board(unsigned int size):
     score=0;
     haswonb=false;
     numempty=size*size;
-    gen.seed((long) this);
+    gen.seed((uintptr_t) this);
     addrandom();
     addrandom();
 
@@ -214,7 +216,7 @@ std::pair<int,int> board::_intexrotate(std::pair<int,int> p,direction d){
         return std::make_pair(bsize-j-1,i);
         break;
     }
-
+    return std::make_pair(0,0);//Should never happen
 }
 
 void board::_zeroanimationinfo(){

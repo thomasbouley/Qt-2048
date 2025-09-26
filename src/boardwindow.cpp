@@ -242,7 +242,7 @@ void boardwindow::initializetiles(){
 void boardwindow::initializelabels(){
     
     scorelabel=new QLabel(tr("Score\n 0"),this);
-    scorelabel->setGeometry(10,labelvstart,100,40);
+    scorelabel->setGeometry(10,labelvstart,100,45);
     scorelabel->setAlignment(Qt::AlignCenter);
     
 
@@ -258,7 +258,7 @@ void boardwindow::initializelabels(){
 
     str.setNum(highscore);
     highscorelabel=new QLabel(tr("High Score\n")+str,this);
-    highscorelabel->setGeometry(winwidth-110-10,labelvstart,110,40);
+    highscorelabel->setGeometry(winwidth-110-10,labelvstart,110,45);
     highscorelabel->setAlignment(Qt::AlignCenter);
     
 
@@ -282,7 +282,7 @@ void boardwindow::resizetiles(){
 
 void boardwindow::resizelabels(){
     newgamebutton->setGeometry(winwidth/2-50,labelvstart,100,40);
-    highscorelabel->setGeometry(winwidth-110-10,labelvstart,110,40);
+    highscorelabel->setGeometry(winwidth-110-10,labelvstart,110,45);
     boardlabel->setGeometry(tileshstart-10,tilesvstart-10,tilespacing*boardsize+10,tilespacing*boardsize+10);
 }
 
